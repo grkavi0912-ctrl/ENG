@@ -1,0 +1,64 @@
+name: ML Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  register-dataset:
+    name: 📥 Register Dataset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Load Dataset
+        run: |
+          echo "Loading dataset..."
+          mkdir -p data
+          echo "Dataset registered successfully"
+
+  data-prep:
+    name: 🧹 Data Preprocessing
+    runs-on: ubuntu-latest
+    needs: register-dataset
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Preprocess Data
+        run: |
+          echo "Cleaning and preprocessing data..."
+          echo "Handling missing values, encoding, scaling"
+
+  model-training:
+    name: 🤖 Model Training
+    runs-on: ubuntu-latest
+    needs: data-prep
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Train Model
+        run: |
+          echo "Training XGBoost model..."
+          python train.py || echo "Add your training script"
+
+  deploy-hosting:
+    name: 🚀 Deploy Hosting
+    runs-on: ubuntu-latest
+    needs: model-training
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy App
+        run: |
+          echo "Deploying model to hosting..."
+          echo "Streamlit / Hugging Face deployment step"
